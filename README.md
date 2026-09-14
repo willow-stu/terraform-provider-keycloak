@@ -210,7 +210,7 @@ Also, many thanks to all the contributors extending it and approving the license
 
 ## License
 
-This software is licensed under Apache License, Version 2.0, (LICENSE-APACHE-2.0 or https://www.apache.org/licenses/LICENSE-2.0)
+This software is licensed under the [Apache License, Version 2.0](LICENSE).
 
 The original license and attribution have been retained. See [NOTICE](NOTICE)
 for fork provenance, downstream modifications, and the trademark disclaimer.

@@ -9,7 +9,8 @@ d15014e2f37928ba85415ed2e2939fd7d9c50ea2
 The original provider was created by Michael Parker and subsequently developed
 by the Keycloak Terraform Provider contributors. The original project and this
 community distribution are licensed under the Apache License, Version 2.0. A
-copy of that license is included in LICENSE-APACHE-2.0.
+copy of that license is included in LICENSE and LICENSE-APACHE-2.0. The latter
+retains the original upstream filename.
 
 License notices and, where applicable, corresponding source material for
 third-party dependencies are included under third_party_licenses in each binary
