@@ -15,6 +15,7 @@ on:
   push:
     branches:
       - "main"
+      - "willow-release-base"
       - "release/*"
     paths-ignore:
       - '**/*.md'
@@ -22,6 +23,7 @@ on:
     # The branches below must be a subset of the branches above
     branches:
       - "main"
+      - "willow-release-base"
       - "release/*"
     paths-ignore:
       - '**/*.md'

@@ -3,12 +3,14 @@ on:
   push:
     branches:
       - "main"
+      - "willow-release-base"
       - "release/*"
     paths-ignore:
       - '**/*.md'
   pull_request:
     branches:
       - "main"
+      - "willow-release-base"
       - "release/*"
     paths-ignore:
       - '**/*.md'
