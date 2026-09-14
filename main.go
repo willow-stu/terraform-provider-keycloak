@@ -1,5 +1,7 @@
 package main
 
+// Modified by willow-stu for its community distribution. See NOTICE.
+
 import (
 	"flag"
 

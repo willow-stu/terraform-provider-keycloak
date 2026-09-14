@@ -1,3 +1,4 @@
+# Modified by willow-stu for its community distribution. See NOTICE.
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -38,6 +39,8 @@ site/
 
 # releases
 *.zip
+dist/
+third_party_licenses/
 
 # Keycloak access token
 keycloak_access_token

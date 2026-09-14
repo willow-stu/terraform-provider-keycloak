@@ -1,11 +1,15 @@
 # Visit https://goreleaser.com for documentation on how to customize this
 # behavior.
+# Modified by willow-stu for its community distribution. See NOTICE.
 version: 2
 
 before:
   hooks:
     # this is just an example and not a requirement for provider building/publishing
     - go mod tidy
+    # Preserve third-party license material, including source for dependencies
+    # whose licenses require source availability with binary distribution.
+    - go run github.com/google/go-licenses@v1.6.0 save ./... --save_path=third_party_licenses
 builds:
   - id: linux
     env:
@@ -51,6 +55,12 @@ builds:
 archives:
   - formats: [zip]
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    files:
+      - LICENSE-APACHE-2.0
+      - NOTICE
+      - README.md
+      - CHANGELOG.md
+      - third_party_licenses/**/*
 checksum:
   extra_files:
     - glob: 'terraform-registry-manifest.json'

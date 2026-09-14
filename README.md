@@ -1,9 +1,14 @@
 # terraform-provider-keycloak
 Terraform provider for [Keycloak](https://www.keycloak.org/).
 
-This community distribution is maintained under the `willow-stu` namespace and
-is based on upstream commit
+> [!IMPORTANT]
+> This is an unofficial community fork maintained under the `willow-stu`
+> namespace. It is not affiliated with, sponsored by, or endorsed by the
+> Keycloak project or The Linux Foundation.
+
+This distribution is based on upstream commit
 [`d15014e2f37928ba85415ed2e2939fd7d9c50ea2`](https://github.com/keycloak/terraform-provider-keycloak/commit/d15014e2f37928ba85415ed2e2939fd7d9c50ea2).
+Its provenance and downstream modifications are documented in [NOTICE](NOTICE).
 
 ## Migration to the new provider
 
@@ -206,5 +211,8 @@ Also, many thanks to all the contributors extending it and approving the license
 ## License
 
 This software is licensed under Apache License, Version 2.0, (LICENSE-APACHE-2.0 or https://www.apache.org/licenses/LICENSE-2.0)
+
+The original license and attribution have been retained. See [NOTICE](NOTICE)
+for fork provenance, downstream modifications, and the trademark disclaimer.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this software by you shall be licensed under the Apache License, Version 2.0, without any additional terms or conditions.

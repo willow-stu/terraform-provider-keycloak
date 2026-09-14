@@ -1,4 +1,15 @@
-## What's Changed
+<!-- Modified by willow-stu for its community distribution. See NOTICE. -->
+
+## 5.9.2 (September 14, 2026)
+
+LEGAL AND DISTRIBUTION:
+
+* document upstream provenance and downstream modifications;
+* add an explicit unofficial-community-fork and trademark disclaimer; and
+* bundle the Apache 2.0 license, NOTICE, attribution, and third-party licensing
+  material in every release archive.
+
+## Upstream changes
 
 ## 5.9.0 (July 31, 2026)
 

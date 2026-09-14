@@ -1,3 +1,4 @@
+# Modified by willow-stu for its community distribution. See NOTICE.
 name: test
 on:
   push:

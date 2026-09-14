@@ -1,0 +1,36 @@
+Terraform Provider for Keycloak — willow-stu community distribution
+
+This distribution is based on the Keycloak Terraform Provider at:
+https://github.com/keycloak/terraform-provider-keycloak
+
+Upstream base commit:
+d15014e2f37928ba85415ed2e2939fd7d9c50ea2
+
+The original provider was created by Michael Parker and subsequently developed
+by the Keycloak Terraform Provider contributors. The original project and this
+community distribution are licensed under the Apache License, Version 2.0. A
+copy of that license is included in LICENSE-APACHE-2.0.
+
+License notices and, where applicable, corresponding source material for
+third-party dependencies are included under third_party_licenses in each binary
+release archive. They are generated from the exact Go dependency graph used for
+the release.
+
+Downstream changes maintained by willow-stu include:
+
+- changing the Terraform Registry provider address to willow-stu/keycloak;
+- selecting the published operating-system and architecture targets;
+- adapting release signing, packaging, and automation;
+- adding Terraform Registry distribution metadata; and
+- documenting the fork, its installation, and its release process.
+
+This is an unofficial community fork. It is not affiliated with, sponsored by,
+or endorsed by the Keycloak project or The Linux Foundation.
+
+Keycloak and related names and marks belong to their respective owners. Their
+use here is solely descriptive: it identifies the software with which this
+Terraform provider interoperates and the origin of the fork. No endorsement or
+official project status is claimed.
+
+This NOTICE is informational and does not modify the Apache License, Version
+2.0.
