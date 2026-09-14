@@ -1,6 +1,10 @@
 # terraform-provider-keycloak
 Terraform provider for [Keycloak](https://www.keycloak.org/).
 
+This community distribution is maintained under the `willow-stu` namespace and
+is based on upstream commit
+[`d15014e2f37928ba85415ed2e2939fd7d9c50ea2`](https://github.com/keycloak/terraform-provider-keycloak/commit/d15014e2f37928ba85415ed2e2939fd7d9c50ea2).
+
 ## Migration to the new provider
 
 To migrate from `mrparkers/keycloak` to the `keycloak/keycloak` Terraform provider, you can use the `terraform state replace-provider` command:
@@ -21,8 +25,8 @@ This provider can be installed automatically using Terraform >=0.13 by using the
 terraform {
   required_providers {
     keycloak = {
-      source = "keycloak/keycloak"
-      version = ">= 5.9.0"
+      source = "willow-stu/keycloak"
+      version = "~> 5.9"
     }
   }
 }

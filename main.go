@@ -18,9 +18,8 @@ func main() {
 		ProviderFunc: func() *schema.Provider {
 			return provider.KeycloakProvider(nil)
 		},
-		Debug: debugMode,
-		// using local provider address for debugging:
-		ProviderAddr: "terraform.local/keycloak/keycloak",
+		Debug:        debugMode,
+		ProviderAddr: "registry.terraform.io/willow-stu/keycloak",
 	}
 	plugin.Serve(opts)
 }
