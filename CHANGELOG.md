@@ -1,6 +1,6 @@
 <!-- Modified by willow-stu for its community distribution. See NOTICE. -->
 
-## Unreleased
+## 5.9.3 (September 17, 2026)
 
 FEATURES:
 
@@ -11,6 +11,13 @@ BUG FIXES:
 
 * serialize create, update, and delete operations that rewrite the same realm
   client policy profile or policy collection.
+
+COMPATIBILITY:
+
+* existing resource schemas, IDs, and state formats remain unchanged;
+* collection locks coordinate operations within a single configured provider
+  client; they do not coordinate separate Terraform runs, provider aliases, or
+  external API clients.
 
 ## 5.9.2 (September 14, 2026)
 

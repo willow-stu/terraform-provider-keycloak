@@ -22,7 +22,9 @@ Downstream changes maintained by willow-stu include:
 - changing the Terraform Registry provider address to willow-stu/keycloak;
 - selecting the published operating-system and architecture targets;
 - adapting release signing, packaging, and automation;
-- adding Terraform Registry distribution metadata; and
+- adding Terraform Registry distribution metadata;
+- supporting import of realm client policy profiles and policies;
+- serializing mutations of each realm client policy collection; and
 - documenting the fork, its installation, and its release process.
 
 This is an independent, unofficial community distribution derived from the
