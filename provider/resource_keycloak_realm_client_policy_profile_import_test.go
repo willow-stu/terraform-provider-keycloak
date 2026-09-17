@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/keycloak/terraform-provider-keycloak/keycloak"
 )
 
 func TestResourceKeycloakRealmClientPolicyProfileImport(t *testing.T) {
@@ -77,5 +78,33 @@ func testRealmClientPolicyImport(t *testing.T, resourceSchema *schema.Resource, 
 	}
 	if got := states[0].Id(); got != id {
 		t.Errorf("unexpected resource ID: got %q, want %q", got, id)
+	}
+}
+
+func TestRealmClientPolicyImportFlattensPrimitiveConfigurationValues(t *testing.T) {
+	profileData := schema.TestResourceDataRaw(t, resourceKeycloakRealmClientPolicyProfile().Schema, nil)
+	profile := &keycloak.RealmClientPolicyProfile{
+		Name:    "test-profile",
+		RealmId: "test-realm",
+		Executors: []keycloak.RealmClientPolicyProfileExecutor{{
+			Name: "pkce-enforcer",
+			Configuration: map[string]interface{}{
+				"enabled": true,
+				"retries": float64(3),
+			},
+		}},
+	}
+
+	if err := mapFromRealmClientPolicyProfileToData(profileData, profile); err != nil {
+		t.Fatalf("mapping profile import state: %v", err)
+	}
+
+	executors := profileData.Get("executor").([]interface{})
+	configuration := executors[0].(map[string]interface{})["configuration"].(map[string]interface{})
+	if got := configuration["enabled"]; got != "true" {
+		t.Errorf("unexpected boolean configuration value: got %q, want %q", got, "true")
+	}
+	if got := configuration["retries"]; got != "3" {
+		t.Errorf("unexpected numeric configuration value: got %q, want %q", got, "3")
 	}
 }

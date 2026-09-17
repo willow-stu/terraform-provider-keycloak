@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
@@ -73,6 +74,12 @@ func TestAccKeycloakRealmClientPolicyProfile_basicWithExecutorAndJSON(t *testing
 				ImportStateId:     fmt.Sprintf("%s/realm-client-policy-profiles/%s", realmName, resourceName),
 				ImportStateVerify: true,
 			},
+			{
+				ResourceName:  "keycloak_realm_client_policy_profile.profile",
+				ImportState:   true,
+				ImportStateId: fmt.Sprintf("%s/realm-client-policy-profiles/does-not-exist", realmName),
+				ExpectError:   regexp.MustCompile("Cannot import non-existent remote object"),
+			},
 		},
 	})
 }
@@ -131,6 +138,12 @@ func TestAccKeycloakRealmClientPolicyProfile_basicWithPolicyAndJSON(t *testing.T
 				ImportState:       true,
 				ImportStateId:     fmt.Sprintf("%s/realm-client-policy-profile-policies/%s", realmName, policyName),
 				ImportStateVerify: true,
+			},
+			{
+				ResourceName:  "keycloak_realm_client_policy_profile_policy.policy",
+				ImportState:   true,
+				ImportStateId: fmt.Sprintf("%s/realm-client-policy-profile-policies/does-not-exist", realmName),
+				ExpectError:   regexp.MustCompile("Cannot import non-existent remote object"),
 			},
 		},
 	})

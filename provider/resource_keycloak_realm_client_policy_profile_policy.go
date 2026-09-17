@@ -169,9 +169,11 @@ func resourceKeycloakRealmClientPolicyProfilePolicyRead(ctx context.Context, dat
 			if err != nil {
 				return diag.FromErr(err)
 			}
+			return nil
 		}
 	}
 
+	data.SetId("")
 	return nil
 }
 
@@ -219,11 +221,21 @@ func mapFromDataToRealmClientPolicyProfilePolicy(data *schema.ResourceData) *key
 }
 
 func mapFromRealmClientPolicyProfilePolicyToData(data *schema.ResourceData, policy *keycloak.RealmClientPolicyProfilePolicy) error {
-	data.Set("name", policy.Name)
-	data.Set("realm_id", policy.RealmId)
-	data.Set("description", policy.Description)
-	data.Set("enabled", policy.Enabled)
-	data.Set("profiles", policy.Profiles)
+	if err := data.Set("name", policy.Name); err != nil {
+		return err
+	}
+	if err := data.Set("realm_id", policy.RealmId); err != nil {
+		return err
+	}
+	if err := data.Set("description", policy.Description); err != nil {
+		return err
+	}
+	if err := data.Set("enabled", policy.Enabled); err != nil {
+		return err
+	}
+	if err := data.Set("profiles", policy.Profiles); err != nil {
+		return err
+	}
 
 	conditions := make([]interface{}, 0)
 	for _, cond := range policy.Conditions {
@@ -233,23 +245,18 @@ func mapFromRealmClientPolicyProfilePolicyToData(data *schema.ResourceData, poli
 		}
 
 		if cond.Configuration != nil {
-			configurations := make(map[string]interface{})
-			for k, v := range cond.Configuration {
-				switch v.(type) {
-				// handle json objects and arrays
-				case map[string]interface{}, []interface{}:
-					s, _ := json.Marshal(v)
-					configurations[k] = string(s)
-				default:
-					configurations[k] = v
-				}
+			configurations, err := flattenRealmClientPolicyConfiguration(cond.Configuration)
+			if err != nil {
+				return err
 			}
 			conditionMap["configuration"] = configurations
 		}
 		conditions = append(conditions, conditionMap)
 	}
 
-	data.Set("condition", conditions)
+	if err := data.Set("condition", conditions); err != nil {
+		return err
+	}
 
 	return nil
 }
