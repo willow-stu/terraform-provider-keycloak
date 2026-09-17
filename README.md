@@ -2,13 +2,18 @@
 Terraform provider for [Keycloak](https://www.keycloak.org/).
 
 > [!IMPORTANT]
-> This is an unofficial community fork maintained under the `willow-stu`
-> namespace. It is not affiliated with, sponsored by, or endorsed by the
+> This is an independent, unofficial community distribution maintained under
+> the `willow-stu` namespace. It is derived from the Keycloak Terraform
+> Provider and is not affiliated with, sponsored by, or endorsed by the
 > Keycloak project or The Linux Foundation.
 
 This distribution is based on upstream commit
 [`d15014e2f37928ba85415ed2e2939fd7d9c50ea2`](https://github.com/keycloak/terraform-provider-keycloak/commit/d15014e2f37928ba85415ed2e2939fd7d9c50ea2).
 Its provenance and downstream modifications are documented in [NOTICE](NOTICE).
+
+This repository is maintained independently and may evolve separately from the
+upstream project. Upstream changes can still be reviewed and incorporated when
+appropriate, while attribution and Apache-2.0 licensing are preserved.
 
 ## Migration to the new provider
 
@@ -20,7 +25,7 @@ You can find the documentation for this command [here](https://developer.hashico
 
 ## Docs
 
-All documentation for this provider can now be found on the Terraform Registry: https://registry.terraform.io/providers/keycloak/keycloak/latest/docs
+Documentation for this distribution is published on the Terraform Registry: https://registry.terraform.io/providers/willow-stu/keycloak/latest/docs
 
 ## Installation
 
@@ -69,13 +74,13 @@ The following versions are used when running acceptance tests in CI:
 ## Releases
 
 This provider uses [GoReleaser](https://goreleaser.com/) to build and publish releases. Each release published to GitHub
-contains binary files for Linux, macOS (darwin), and Windows, as configured within the [`.goreleaser.yml`](https://github.com/keycloak/terraform-provider-keycloak/blob/master/.goreleaser.yml)
+contains binary files for Linux, macOS (darwin), and Windows, as configured within the [`.goreleaser.yml`](https://github.com/willow-stu/terraform-provider-keycloak/blob/willow-release-base/.goreleaser.yml)
 file.
 
 Each release also contains a `terraform-provider-keycloak_${RELEASE_VERSION}_SHA256SUMS` file that can be used to check integrity.
 
-You can find the list of releases [here](https://github.com/keycloak/terraform-provider-keycloak/releases).
-You can find the changelog for each version [here](https://github.com/keycloak/terraform-provider-keycloak/blob/master/CHANGELOG.md).
+You can find the list of releases [here](https://github.com/willow-stu/terraform-provider-keycloak/releases).
+You can find the changelog for each version [here](https://github.com/willow-stu/terraform-provider-keycloak/blob/willow-release-base/CHANGELOG.md).
 
 Note: Prior to v2.0.0, a statically linked build for use within Alpine linux was included with each release. This is no longer
 done due to [GoReleaser not supporting CGO](https://goreleaser.com/limitations/cgo/). Instead of using a statically linked,

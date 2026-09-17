@@ -25,13 +25,14 @@ Downstream changes maintained by willow-stu include:
 - adding Terraform Registry distribution metadata; and
 - documenting the fork, its installation, and its release process.
 
-This is an unofficial community fork. It is not affiliated with, sponsored by,
-or endorsed by the Keycloak project or The Linux Foundation.
+This is an independent, unofficial community distribution derived from the
+upstream project. It is not affiliated with, sponsored by, or endorsed by the
+Keycloak project or The Linux Foundation.
 
 Keycloak and related names and marks belong to their respective owners. Their
 use here is solely descriptive: it identifies the software with which this
-Terraform provider interoperates and the origin of the fork. No endorsement or
-official project status is claimed.
+Terraform provider interoperates and the origin of this distribution. No
+endorsement or official project status is claimed.
 
 This NOTICE is informational and does not modify the Apache License, Version
 2.0.
