@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
@@ -67,6 +68,18 @@ func TestAccKeycloakRealmClientPolicyProfile_basicWithExecutorAndJSON(t *testing
 				Config: testKeycloakRealmClientPolicyProfile_basicWithExecutor(realmName, resourceName, description, executorName, testKeycloakRealmClientPolicyProfile_mapConfig(configuration)),
 				Check:  testAccCheckKeycloakRealmClientPolicyProfileWithExecutorMatches(realmName, resourceName, executorName, configuration),
 			},
+			{
+				ResourceName:      "keycloak_realm_client_policy_profile.profile",
+				ImportState:       true,
+				ImportStateId:     fmt.Sprintf("%s/realm-client-policy-profiles/%s", realmName, resourceName),
+				ImportStateVerify: true,
+			},
+			{
+				ResourceName:  "keycloak_realm_client_policy_profile.profile",
+				ImportState:   true,
+				ImportStateId: fmt.Sprintf("%s/realm-client-policy-profiles/does-not-exist", realmName),
+				ExpectError:   regexp.MustCompile("Cannot import non-existent remote object"),
+			},
 		},
 	})
 }
@@ -93,7 +106,7 @@ func TestAccKeycloakRealmClientPolicyProfile_basicWithPolicy(t *testing.T) {
 		PreCheck:                 func() { testAccPreCheck(t) },
 		Steps: []resource.TestStep{
 			{
-				Config: testKeycloakRealmClientPolicyProfile_basicWithPolicy(realmName, profileName, profileDescription, policyName, policyDescription, conditionName, testKeycloakRealmClientPolicyProfile_mapConfig(configuration)),
+				Config: testKeycloakRealmClientPolicyProfile_basicWithPolicy(realmName, "Client policy realm", profileName, profileDescription, policyName, policyDescription, conditionName, testKeycloakRealmClientPolicyProfile_mapConfig(configuration)),
 				Check:  testAccCheckKeycloakRealmClientPolicyProfilePolicyExists(realmName, policyName),
 			},
 		},
@@ -117,8 +130,27 @@ func TestAccKeycloakRealmClientPolicyProfile_basicWithPolicyAndJSON(t *testing.T
 		PreCheck:                 func() { testAccPreCheck(t) },
 		Steps: []resource.TestStep{
 			{
-				Config: testKeycloakRealmClientPolicyProfile_basicWithPolicy(realmName, profileName, profileDescription, policyName, policyDescription, conditionName, testKeycloakRealmClientPolicyProfile_mapConfig(configuration)),
+				Config: testKeycloakRealmClientPolicyProfile_basicWithPolicy(realmName, "Before realm update", profileName, profileDescription, policyName, policyDescription, conditionName, testKeycloakRealmClientPolicyProfile_mapConfig(configuration)),
 				Check:  testAccCheckKeycloakRealmClientPolicyProfilePolicyMatches(realmName, policyName, conditionName, configuration),
+			},
+			{
+				Config: testKeycloakRealmClientPolicyProfile_basicWithPolicy(realmName, "After realm update", profileName, profileDescription, policyName, policyDescription, conditionName, testKeycloakRealmClientPolicyProfile_mapConfig(configuration)),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckKeycloakRealmClientPolicyProfileExists(realmName, profileName),
+					testAccCheckKeycloakRealmClientPolicyProfilePolicyMatches(realmName, policyName, conditionName, configuration),
+				),
+			},
+			{
+				ResourceName:      "keycloak_realm_client_policy_profile_policy.policy",
+				ImportState:       true,
+				ImportStateId:     fmt.Sprintf("%s/realm-client-policy-profile-policies/%s", realmName, policyName),
+				ImportStateVerify: true,
+			},
+			{
+				ResourceName:  "keycloak_realm_client_policy_profile_policy.policy",
+				ImportState:   true,
+				ImportStateId: fmt.Sprintf("%s/realm-client-policy-profile-policies/does-not-exist", realmName),
+				ExpectError:   regexp.MustCompile("Cannot import non-existent remote object"),
 			},
 		},
 	})
@@ -184,10 +216,11 @@ resource "keycloak_openid_client" "policy-client" {
 	`, realm, name, description, executorName, configuration)
 }
 
-func testKeycloakRealmClientPolicyProfile_basicWithPolicy(realm string, profileName string, profileDescription string, policyName string, policyDescription string, conditionName string, configuration string) string {
+func testKeycloakRealmClientPolicyProfile_basicWithPolicy(realm string, realmDisplayName string, profileName string, profileDescription string, policyName string, policyDescription string, conditionName string, configuration string) string {
 	return fmt.Sprintf(`
 resource "keycloak_realm" "realm" {
-	realm = "%s"
+	realm        = "%s"
+	display_name = "%s"
 }
 
 	resource "keycloak_realm_client_policy_profile" "profile" {
@@ -220,7 +253,7 @@ resource "keycloak_openid_client" "policy-client" {
     keycloak_realm_client_policy_profile.profile
   ]
 }
-	`, realm, profileName, profileDescription, policyName, policyDescription, conditionName, configuration)
+	`, realm, realmDisplayName, profileName, profileDescription, policyName, policyDescription, conditionName, configuration)
 }
 
 func testAccCheckKeycloakRealmClientPolicyProfileExists(realm string, profileName string) resource.TestCheckFunc {
