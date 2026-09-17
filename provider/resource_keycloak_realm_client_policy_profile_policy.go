@@ -79,8 +79,9 @@ func resourceKeycloakRealmClientPolicyProfilePolicyUpdate(ctx context.Context, d
 	keycloakClient := meta.(*keycloak.KeycloakClient)
 	policy := mapFromDataToRealmClientPolicyProfilePolicy(data)
 	realmId := policy.RealmId
-	keycloakClient.Mutex.Lock(fmt.Sprintf("resourceKeycloakRealmClientPolicyProfilePolicyUpdate:%s", realmId))
-	defer keycloakClient.Mutex.Unlock(fmt.Sprintf("resourceKeycloakRealmClientPolicyProfilePolicyUpdate:%s", realmId))
+	mutexKey := realmClientPolicyPoliciesMutexKey(realmId)
+	keycloakClient.Mutex.Lock(mutexKey)
+	defer keycloakClient.Mutex.Unlock(mutexKey)
 	realmClientPolicyProfilePolicies, err := keycloakClient.GetAllRealmClientPolicyProfilePolices(ctx, realmId)
 	if err != nil {
 		return diag.FromErr(err)
@@ -105,8 +106,9 @@ func resourceKeycloakRealmClientPolicyProfilePolicyDelete(ctx context.Context, d
 	slicedPolicies := []keycloak.RealmClientPolicyProfilePolicy{}
 	policy := mapFromDataToRealmClientPolicyProfilePolicy(data)
 	realmId := policy.RealmId
-	keycloakClient.Mutex.Lock(fmt.Sprintf("resourceKeycloakRealmClientPolicyProfilePolicyDelete:%s", realmId))
-	defer keycloakClient.Mutex.Unlock(fmt.Sprintf("resourceKeycloakRealmClientPolicyProfilePolicyDelete:%s", realmId))
+	mutexKey := realmClientPolicyPoliciesMutexKey(realmId)
+	keycloakClient.Mutex.Lock(mutexKey)
+	defer keycloakClient.Mutex.Unlock(mutexKey)
 	realmClientPolicyProfilePolicies, err := keycloakClient.GetAllRealmClientPolicyProfilePolices(ctx, realmId)
 	if err != nil {
 		return diag.FromErr(err)
@@ -133,8 +135,9 @@ func resourceKeycloakRealmClientPolicyProfilePolicyCreate(ctx context.Context, d
 	policy := mapFromDataToRealmClientPolicyProfilePolicy(data)
 
 	realmId := policy.RealmId
-	keycloakClient.Mutex.Lock(fmt.Sprintf("resourceKeycloakRealmClientPolicyProfilePolicyCreate:%s", realmId))
-	defer keycloakClient.Mutex.Unlock(fmt.Sprintf("resourceKeycloakRealmClientPolicyProfilePolicyCreate:%s", realmId))
+	mutexKey := realmClientPolicyPoliciesMutexKey(realmId)
+	keycloakClient.Mutex.Lock(mutexKey)
+	defer keycloakClient.Mutex.Unlock(mutexKey)
 	name := policy.Name
 	data.SetId(fmt.Sprintf("%s/realm-client-policy-profile-policies/%s", realmId, name))
 
@@ -151,6 +154,12 @@ func resourceKeycloakRealmClientPolicyProfilePolicyCreate(ctx context.Context, d
 	}
 
 	return resourceKeycloakRealmClientPolicyProfilePolicyRead(ctx, data, meta)
+}
+
+// All policy mutations share one key because Keycloak replaces the full
+// policy collection on every create, update, and delete operation.
+func realmClientPolicyPoliciesMutexKey(realmId string) string {
+	return fmt.Sprintf("resourceKeycloakRealmClientPolicyPolicies:%s", realmId)
 }
 
 func resourceKeycloakRealmClientPolicyProfilePolicyRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {

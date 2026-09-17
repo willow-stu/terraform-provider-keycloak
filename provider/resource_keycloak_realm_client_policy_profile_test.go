@@ -29,6 +29,55 @@ func TestAccKeycloakRealmClientPolicyProfile_basic(t *testing.T) {
 	})
 }
 
+func TestAccKeycloakRealmClientPolicyProfile_mixedMutations(t *testing.T) {
+	realmName := acctest.RandomWithPrefix("tf-acc")
+	existingProfile := "existing-profile"
+	newProfile := "new-profile"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: testAccProtoV5ProviderFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{
+				Config: testKeycloakRealmClientPolicyProfile_basic(realmName, existingProfile, "Before update"),
+				Check:  testAccCheckKeycloakRealmClientPolicyProfileExists(realmName, existingProfile),
+			},
+			{
+				Config: testKeycloakRealmClientPolicyProfile_mixedMutations(realmName, existingProfile, newProfile),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckKeycloakRealmClientPolicyProfileDescription(realmName, existingProfile, "After update"),
+					testAccCheckKeycloakRealmClientPolicyProfileExists(realmName, newProfile),
+				),
+			},
+		},
+	})
+}
+
+func TestAccKeycloakRealmClientPolicyProfilePolicy_mixedMutations(t *testing.T) {
+	realmName := acctest.RandomWithPrefix("tf-acc")
+	profileName := "test-profile"
+	existingPolicy := "existing-policy"
+	newPolicy := "new-policy"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: testAccProtoV5ProviderFactories,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{
+				Config: testKeycloakRealmClientPolicyProfile_basicWithPolicy(realmName, "Client policy realm", profileName, "Test profile", existingPolicy, "Before update", "any-client", "{}"),
+				Check:  testAccCheckKeycloakRealmClientPolicyProfilePolicyExists(realmName, existingPolicy),
+			},
+			{
+				Config: testKeycloakRealmClientPolicyProfilePolicy_mixedMutations(realmName, profileName, existingPolicy, newPolicy),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckKeycloakRealmClientPolicyProfilePolicyDescription(realmName, existingPolicy, "After update"),
+					testAccCheckKeycloakRealmClientPolicyProfilePolicyExists(realmName, newPolicy),
+				),
+			},
+		},
+	})
+}
+
 func TestAccKeycloakRealmClientPolicyProfile_basicWithExecutor(t *testing.T) {
 	realmName := acctest.RandomWithPrefix("tf-acc")
 	resourceName := "test-profile-with-executor"
@@ -187,6 +236,26 @@ resource "keycloak_realm_client_policy_profile" "profile" {
 	`, realm, name, description)
 }
 
+func testKeycloakRealmClientPolicyProfile_mixedMutations(realm string, existingProfile string, newProfile string) string {
+	return fmt.Sprintf(`
+resource "keycloak_realm" "realm" {
+	realm = "%s"
+}
+
+resource "keycloak_realm_client_policy_profile" "profile" {
+	realm_id    = keycloak_realm.realm.realm
+	name        = "%s"
+	description = "After update"
+}
+
+resource "keycloak_realm_client_policy_profile" "new" {
+	realm_id    = keycloak_realm.realm.realm
+	name        = "%s"
+	description = "Created alongside update"
+}
+`, realm, existingProfile, newProfile)
+}
+
 func testKeycloakRealmClientPolicyProfile_basicWithExecutor(realm string, name string, description string, executorName string, configuration string) string {
 	return fmt.Sprintf(`
 resource "keycloak_realm" "realm" {
@@ -256,11 +325,45 @@ resource "keycloak_openid_client" "policy-client" {
 	`, realm, realmDisplayName, profileName, profileDescription, policyName, policyDescription, conditionName, configuration)
 }
 
+func testKeycloakRealmClientPolicyProfilePolicy_mixedMutations(realm string, profileName string, existingPolicy string, newPolicy string) string {
+	return testKeycloakRealmClientPolicyProfile_basicWithPolicy(realm, "Client policy realm", profileName, "Test profile", existingPolicy, "After update", "any-client", "{}") + fmt.Sprintf(`
+
+resource "keycloak_realm_client_policy_profile_policy" "new" {
+	realm_id    = keycloak_realm.realm.realm
+	name        = "%s"
+	description = "Created alongside update"
+
+	profiles = [
+		keycloak_realm_client_policy_profile.profile.name
+	]
+
+	condition {
+		name          = "any-client"
+		configuration = {}
+	}
+}
+`, newPolicy)
+}
+
 func testAccCheckKeycloakRealmClientPolicyProfileExists(realm string, profileName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		_, err := keycloakClient.GetRealmClientPolicyProfileByName(testCtx, realm, profileName)
 		if err != nil {
 			return fmt.Errorf("Client policy profile not found: %s", profileName)
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckKeycloakRealmClientPolicyProfileDescription(realm string, profileName string, description string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		profile, err := keycloakClient.GetRealmClientPolicyProfileByName(testCtx, realm, profileName)
+		if err != nil {
+			return fmt.Errorf("client policy profile not found: %s", profileName)
+		}
+		if profile.Description != description {
+			return fmt.Errorf("unexpected description for client policy profile %s: got %q, want %q", profileName, profile.Description, description)
 		}
 
 		return nil
@@ -310,6 +413,20 @@ func testAccCheckKeycloakRealmClientPolicyProfilePolicyExists(realm string, poli
 		_, err := keycloakClient.GetRealmClientPolicyProfilePolicyByName(testCtx, realm, policyName)
 		if err != nil {
 			return fmt.Errorf("Client policy profile policy not found: %s", policyName)
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckKeycloakRealmClientPolicyProfilePolicyDescription(realm string, policyName string, description string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		policy, err := keycloakClient.GetRealmClientPolicyProfilePolicyByName(testCtx, realm, policyName)
+		if err != nil {
+			return fmt.Errorf("client policy profile policy not found: %s", policyName)
+		}
+		if policy.Description != description {
+			return fmt.Errorf("unexpected description for client policy profile policy %s: got %q, want %q", policyName, policy.Description, description)
 		}
 
 		return nil

@@ -7,6 +7,11 @@ FEATURES:
 * add import support for `keycloak_realm_client_policy_profile` and
   `keycloak_realm_client_policy_profile_policy` ([#1](https://github.com/willow-stu/terraform-provider-keycloak/issues/1)).
 
+BUG FIXES:
+
+* serialize create, update, and delete operations that rewrite the same realm
+  client policy profile or policy collection.
+
 ## 5.9.2 (September 14, 2026)
 
 LEGAL AND DISTRIBUTION:
