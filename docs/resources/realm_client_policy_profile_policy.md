@@ -75,4 +75,9 @@ resource "keycloak_realm_client_policy_profile_policy" "policy" {
 
 ## Import
 
-This resource currently does not support importing.
+Realm client policy profile policies can be imported using the realm ID and
+policy name:
+
+```bash
+terraform import keycloak_realm_client_policy_profile_policy.policy my-realm/realm-client-policy-profile-policies/my-policy
+```

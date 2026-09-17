@@ -17,6 +17,9 @@ func resourceKeycloakRealmClientPolicyProfilePolicy() *schema.Resource {
 		ReadContext:   resourceKeycloakRealmClientPolicyProfilePolicyRead,
 		DeleteContext: resourceKeycloakRealmClientPolicyProfilePolicyDelete,
 		UpdateContext: resourceKeycloakRealmClientPolicyProfilePolicyUpdate,
+		Importer: &schema.ResourceImporter{
+			StateContext: resourceKeycloakRealmClientPolicyProfilePolicyImport,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
@@ -61,6 +64,15 @@ func resourceKeycloakRealmClientPolicyProfilePolicy() *schema.Resource {
 			},
 		},
 	}
+}
+
+func resourceKeycloakRealmClientPolicyProfilePolicyImport(_ context.Context, data *schema.ResourceData, _ interface{}) ([]*schema.ResourceData, error) {
+	err := importRealmClientPolicyResource(data, "realm-client-policy-profile-policies")
+	if err != nil {
+		return nil, err
+	}
+
+	return []*schema.ResourceData{data}, nil
 }
 
 func resourceKeycloakRealmClientPolicyProfilePolicyUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {

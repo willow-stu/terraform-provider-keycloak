@@ -1,5 +1,12 @@
 <!-- Modified by willow-stu for its community distribution. See NOTICE. -->
 
+## Unreleased
+
+FEATURES:
+
+* add import support for `keycloak_realm_client_policy_profile` and
+  `keycloak_realm_client_policy_profile_policy` ([#1](https://github.com/willow-stu/terraform-provider-keycloak/issues/1)).
+
 ## 5.9.2 (September 14, 2026)
 
 LEGAL AND DISTRIBUTION:

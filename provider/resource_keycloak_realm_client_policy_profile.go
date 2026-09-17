@@ -17,6 +17,9 @@ func resourceKeycloakRealmClientPolicyProfile() *schema.Resource {
 		ReadContext:   resourceKeycloakRealmClientPolicyProfileRead,
 		DeleteContext: resourceKeycloakRealmClientPolicyProfileDelete,
 		UpdateContext: resourceKeycloakRealmClientPolicyProfileUpdate,
+		Importer: &schema.ResourceImporter{
+			StateContext: resourceKeycloakRealmClientPolicyProfileImport,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
@@ -49,6 +52,31 @@ func resourceKeycloakRealmClientPolicyProfile() *schema.Resource {
 			},
 		},
 	}
+}
+
+func resourceKeycloakRealmClientPolicyProfileImport(_ context.Context, data *schema.ResourceData, _ interface{}) ([]*schema.ResourceData, error) {
+	err := importRealmClientPolicyResource(data, "realm-client-policy-profiles")
+	if err != nil {
+		return nil, err
+	}
+
+	return []*schema.ResourceData{data}, nil
+}
+
+func importRealmClientPolicyResource(data *schema.ResourceData, resourcePath string) error {
+	parts := strings.SplitN(data.Id(), "/", 3)
+	if len(parts) != 3 || parts[0] == "" || parts[1] != resourcePath || parts[2] == "" {
+		return fmt.Errorf("invalid import ID %q; expected {realm_id}/%s/{name}", data.Id(), resourcePath)
+	}
+
+	if err := data.Set("realm_id", parts[0]); err != nil {
+		return fmt.Errorf("setting realm_id during import: %w", err)
+	}
+	if err := data.Set("name", parts[2]); err != nil {
+		return fmt.Errorf("setting name during import: %w", err)
+	}
+
+	return nil
 }
 
 func resourceKeycloakRealmClientPolicyProfileUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {

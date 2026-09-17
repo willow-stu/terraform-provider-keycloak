@@ -67,6 +67,12 @@ func TestAccKeycloakRealmClientPolicyProfile_basicWithExecutorAndJSON(t *testing
 				Config: testKeycloakRealmClientPolicyProfile_basicWithExecutor(realmName, resourceName, description, executorName, testKeycloakRealmClientPolicyProfile_mapConfig(configuration)),
 				Check:  testAccCheckKeycloakRealmClientPolicyProfileWithExecutorMatches(realmName, resourceName, executorName, configuration),
 			},
+			{
+				ResourceName:      "keycloak_realm_client_policy_profile.profile",
+				ImportState:       true,
+				ImportStateId:     fmt.Sprintf("%s/realm-client-policy-profiles/%s", realmName, resourceName),
+				ImportStateVerify: true,
+			},
 		},
 	})
 }
@@ -119,6 +125,12 @@ func TestAccKeycloakRealmClientPolicyProfile_basicWithPolicyAndJSON(t *testing.T
 			{
 				Config: testKeycloakRealmClientPolicyProfile_basicWithPolicy(realmName, profileName, profileDescription, policyName, policyDescription, conditionName, testKeycloakRealmClientPolicyProfile_mapConfig(configuration)),
 				Check:  testAccCheckKeycloakRealmClientPolicyProfilePolicyMatches(realmName, policyName, conditionName, configuration),
+			},
+			{
+				ResourceName:      "keycloak_realm_client_policy_profile_policy.policy",
+				ImportState:       true,
+				ImportStateId:     fmt.Sprintf("%s/realm-client-policy-profile-policies/%s", realmName, policyName),
+				ImportStateVerify: true,
 			},
 		},
 	})
